@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Layanan Pengaduan, Kritik dan Laporan Sekolah</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Gaya body */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+    }
+
+    /* Gaya header */
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: #0521d8;
+      color: white;
+    }
+
+    /* Gaya navbar */
+    .navbar {
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    /* Gaya link navbar */
+    .navbar a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+
+    /* Gaya konten utama */
+    .main {
+      padding: 20px;
+      background: #f1f1f1;
+    }
+
+    /* Gaya form */
+    .form {
+      width: 80%;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      background: white;
+    }
+
+    /* Gaya label form */
+    .form label {
+      display: block;
+      margin: 10px 0;
+    }
+
+    /* Gaya input form */
+    .form input, .form select, .form textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    /* Gaya tombol form */
+    .form button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #2a45f5;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Gaya tabel */
+    .table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+
+    /* Gaya sel tabel */
+    .table td, .table th {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    /* Gaya judul tabel */
+    .table th {
+      background: #0521d8;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Layanan Pengaduan, Kritik dan Laporan Sekolah</h1>
+    <p>Berikan kritik masukan serta laporan anda terhadap sekolah</p>
+    <h4>SMP NEGERI 163 JAKARTA</p>
+  </div>
+  <div class="navbar">
+    <a href="#">Beranda</a>
+    <a href="#">Tentang Sekolah</a>
+    <a href="#">Galeri</a>
+    <a href="#">Daftar</a>
+    <a href="#">Masuk</a>
+    <a href="#">Hubungi Kami</a>
+  </div>
+  <div class="main">
+    <h2>Buat Pengaduan atau Laporan</h2>
+    <p>Silakan isi form berikut untuk membuat pengaduan atau laporan terkait sekolah</p>
+    <div class="form">
+      <form id="form-pengaduan" method="post" action="proses.php">
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" name="nama" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="kategori">Kategori:</label>
+        <select id="kategori" name="kategori" required>
+          <option value="">Pilih kategori</option>
+          <option value="Kinerja">Kinerja</option>
+          <option value="Fasilitas">Fasilitas</option>
+          <option value="Kebijakan">Kebijakan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <label for="pesan">Pesan:</label>
+        <textarea id="pesan" name="pesan" rows="10" required></textarea>
+        <button type="submit" id="submit">Kirim</button>
+      </form>
+    </div>
+    <h2>Daftar Pengaduan dan Laporan</h2>
+    <p>Berikut adalah daftar pengaduan dan laporan yang telah dikirim oleh pengguna, beserta tanggapan dari pihak sekolah</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>Kategori</th>
+          <th>Pesan</th>
+          <th>Tanggapan</th>
+        </tr>
+      </thead>
+      <tbody id="tabel-pengaduan">
+        <!-- Isi tabel akan diisi oleh JavaScript -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Fungsi untuk mengambil data pengaduan dari server
+    function getData() {
+      // Buat objek XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      // Buat fungsi yang akan dijalankan saat respon diterima
+      xhr.onload = function() {
+        // Jika status respon OK
+        if (xhr.status == 200) {
+          // Ubah respon menjadi objek JavaScript
+          var data = JSON.parse(xhr.responseText);
+          // Buat variabel untuk menampung isi tabel
+          var output = "";
+          // Looping setiap data pengaduan
+          for (var i = 0; i < data.length; i++) {
+            // Tambahkan baris tabel dengan data pengaduan
+            output += "<tr>";
+            output += "<td>" + (i + 1) + "</td>";
+            output += "<td>" + data[i].nama + "</td>";
+            output += "<td>" + data[i].email + "</td>";
+            output += "<td>" + data[i].kategori + "</td>";
+            output += "<td>" + data[i].pesan + "</td>";
+            output += "<td>" + data[i].tanggapan + "</td>";
+            output += "</tr>";
+          }
+          // Masukkan output ke dalam elemen tbody
+          document.getElementById("tabel-pengaduan").innerHTML = output;
+        }
+      };
+      // Buka koneksi ke server dengan metode GET
+      xhr.open("GET", "data.php", true);
+      // Kirim permintaan
+      xhr.send();
+    }
+
+    // Panggil fungsi getData saat halaman dimuat
+    getData();
+
+    // Ambil elemen form
+    var form = document.getElementById("form-pengaduan");
+    // Tambahkan event listener saat form disubmit
+    form.addEventListener("submit", function(event) {
+      // Cegah perilaku default form
+      event.preventDefault();
+      // Buat objek FormData untuk mengambil data form
+      var formData = new FormData(form);
+      // Buat objek XMLHttpRequest
+var xhr = new XMLHttpRequest();
+// Buat fungsi yang akan dijalankan saat respon dikirim
+xhr.onload = function() {
+  // Jika status respon OK
+  if (xhr.status == 200) {
+    // Tampilkan pesan sukses
+    alert("Pengaduan atau laporan berhasil dikirim");
+    // Kosongkan form
+    form.reset();
+    // Panggil fungsi getData untuk memperbarui tabel
+    getData();
+  }
+};
+// Buka koneksi ke server dengan metode POST
+xhr.open("POST", "proses.php", true);
+// Kirim data form
+xhr.send(formData);
+});
+</script>
+</body>
+</html>
